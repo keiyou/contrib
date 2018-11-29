@@ -1,4 +1,4 @@
-FROM ubuntu:16.04 
+FROM ubuntu:16.04
 ENV KAFKA_USER=kafka \
 KAFKA_DATA_DIR=/var/lib/kafka/data \
 JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
@@ -6,21 +6,23 @@ KAFKA_HOME=/opt/kafka \
 PATH=$PATH:/opt/kafka/bin
 
 ARG KAFKA_VERSION=0.10.2.2
-ARG KAFKA_DIST=kafka_2.11-0.10.2.2
+ARG KAFKA_PACK=kafka_2.11-0.10.2.2
+ARG KAFKA_DIST=kafka
 RUN set -x \
     && apt-get update \
     && apt-get install -y openjdk-8-jre-headless wget \
-	&& wget -q "http://www.apache.org/dist/kafka/$KAFKA_VERSION/$KAFKA_DIST.tgz" \
-    && wget -q "http://www.apache.org/dist/kafka/$KAFKA_VERSION/$KAFKA_DIST.tgz.asc" \
+    && wget -q "http://www.apache.org/dist/kafka/$KAFKA_VERSION/$KAFKA_PACK.tgz" \
+    && wget -q "http://www.apache.org/dist/kafka/$KAFKA_VERSION/$KAFKA_PACK.tgz.asc" \
     && wget -q "http://kafka.apache.org/KEYS" \
-    && export GNUPGHOME="$(mktemp -d)" \ 
+    && export GNUPGHOME="$(mktemp -d)" \
     && gpg --import KEYS \
-    && gpg --batch --verify "$KAFKA_DIST.tgz.asc" "$KAFKA_DIST.tgz" \
-    && tar -xzf "$KAFKA_DIST.tgz" -C /opt \
-    && rm -r "$GNUPGHOME" "$KAFKA_DIST.tgz" "$KAFKA_DIST.tgz.asc"
-    
-COPY log4j.properties /opt/kafka/config/
-COPY tools-log4j.properties /opt/kafka/config/
+    && gpg --batch --verify "$KAFKA_PACK.tgz.asc" "$KAFKA_PACK.tgz" \
+    && tar -xzf "$KAFKA_PACK.tgz" -C /opt \
+    && mv /opt/$KAFKA_PACK /opt/$KAFKA_DIST \
+    && rm -r "$GNUPGHOME" "$KAFKA_PACK.tgz" "$KAFKA_PACK.tgz.asc"
+
+COPY log4j.properties /opt/$KAFKA_DIST/log4j_config/
+COPY tools-log4j.properties /opt/$KAFKA_DIST/log4j_config/
 
 RUN set -x \
     && ln -s /opt/$KAFKA_DIST $KAFKA_HOME \
@@ -30,4 +32,4 @@ RUN set -x \
     && mkdir -p $KAFKA_DATA_DIR \
     && chown -R "$KAFKA_USER:$KAFKA_USER"  /opt/$KAFKA_DIST \
     && chown -R "$KAFKA_USER:$KAFKA_USER"  $KAFKA_DATA_DIR
-  
+
