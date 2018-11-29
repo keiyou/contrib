@@ -6,7 +6,7 @@ KAFKA_HOME=/opt/kafka \
 PATH=$PATH:/opt/kafka/bin
 
 ARG KAFKA_VERSION=0.10.2.2
-ARG KAFKA_DIST=kafka
+ARG KAFKA_DIST=kafka_2.11-0.10.2.2
 RUN set -x \
     && apt-get update \
     && apt-get install -y openjdk-8-jre-headless wget \
@@ -19,8 +19,8 @@ RUN set -x \
     && tar -xzf "$KAFKA_DIST.tgz" -C /opt \
     && rm -r "$GNUPGHOME" "$KAFKA_DIST.tgz" "$KAFKA_DIST.tgz.asc"
     
-COPY log4j.properties /opt/$KAFKA_DIST/config/
-COPY tools-log4j.properties /opt/$KAFKA_DIST/config/
+COPY log4j.properties /opt/kafka/config/
+COPY tools-log4j.properties /opt/kafka/config/
 
 RUN set -x \
     && ln -s /opt/$KAFKA_DIST $KAFKA_HOME \
