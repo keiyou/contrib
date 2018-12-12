@@ -5,8 +5,8 @@ JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
 KAFKA_HOME=/opt/kafka \
 PATH=$PATH:/opt/kafka/bin
 
-ARG KAFKA_VERSION=0.10.2.2
-ARG KAFKA_PACK=kafka_2.11-0.10.2.2
+ARG KAFKA_VERSION=0.11.0.3
+ARG KAFKA_PACK=kafka_2.11-0.11.0.3
 ARG KAFKA_DIST=kafka
 RUN set -x \
     && apt-get update \
